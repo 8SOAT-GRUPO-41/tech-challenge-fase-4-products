@@ -1,4 +1,4 @@
-# 8SOAT FIAP Tech Challenge | Grupo 41 | API
+# 8SOAT FIAP Tech Challenge | Grupo 41 | Products API
 
 ## Descrição do Projeto
 
