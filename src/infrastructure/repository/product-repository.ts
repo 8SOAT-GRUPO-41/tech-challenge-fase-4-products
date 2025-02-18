@@ -1,67 +1,67 @@
 import type { ProductRepository } from '@/application/ports/product-repository'
 import { Product } from '@/domain/entities'
 import type { ProductCategory } from '@/domain/enums'
-import type { DatabaseConnection } from '@/infrastructure/database/database-connection'
+import type { MongoDBConnection } from '@/infrastructure/database/mongo-connection'
 
 export class ProductRepositoryDatabase implements ProductRepository {
-  constructor(private readonly databaseConnection: DatabaseConnection) {}
+  constructor(private readonly databaseConnection: MongoDBConnection) {}
 
   async save(product: Product) {
-    const sql = 'INSERT INTO products (product_id, name, price, description, category) VALUES ($1, $2, $3, $4, $5)'
-    const params = [
-      product.productId,
-      product.getName(),
-      product.getPrice(),
-      product.getDescription(),
-      product.getCategory()
-    ]
-    await this.databaseConnection.query(sql, params)
+    const productsCollection = this.databaseConnection.getCollection('products')
+    await productsCollection.insertOne({
+      product_id: product.productId,
+      name: product.getName(),
+      price: product.getPrice(),
+      description: product.getDescription(),
+      category: product.getCategory()
+    })
   }
 
   async delete(productId: string) {
-    const sql = 'DELETE FROM products WHERE product_id = $1'
-    const params = [productId]
-    await this.databaseConnection.query(sql, params)
+    const productsCollection = this.databaseConnection.getCollection('products')
+    await productsCollection.deleteOne({ product_id: productId })
   }
 
   async findById(id: string): Promise<Product | null> {
-    const sql = 'SELECT * FROM products WHERE product_id = $1'
-    const params = [id]
-    const result = await this.databaseConnection.query<{
+    const productsCollection = this.databaseConnection.getCollection<{
       product_id: string
       name: string
       category: ProductCategory
       price: string
       description: string
-    }>(sql, params)
-    const record = result.shift()
+    }>('products')
+    const record = await productsCollection.findOne({ product_id: id })
     if (!record) return null
     return Product.restore(record.product_id, record.name, record.category, +record.price, record.description)
   }
 
   async update(product: Product) {
-    const sql = 'UPDATE products SET name = $1, price = $2, description = $3, category = $4 WHERE product_id = $5'
-    const params = [
-      product.getName(),
-      product.getPrice(),
-      product.getDescription(),
-      product.getCategory(),
-      product.productId
-    ]
-    await this.databaseConnection.query(sql, params)
+    const productsCollection = this.databaseConnection.getCollection('products')
+    await productsCollection.updateOne(
+      { product_id: product.productId },
+      {
+        name: product.getName(),
+        price: product.getPrice(),
+        description: product.getDescription(),
+        category: product.getCategory()
+      }
+    )
   }
 
   async findByCategory(category: string): Promise<Product[]> {
-    const sql = 'SELECT * FROM products WHERE category = $1'
-    const params = [category]
-    const result = await this.databaseConnection.query<{
+    const productsCollection = this.databaseConnection.getCollection<{
       product_id: string
       name: string
       category: ProductCategory
       price: string
       description: string
-    }>(sql, params)
-    return result.map((record) =>
+    }>('products')
+    const records = await productsCollection
+      .find({
+        category: category as ProductCategory
+      })
+      .toArray()
+    return records.map((record) =>
       Product.restore(record.product_id, record.name, record.category, +record.price, record.description)
     )
   }

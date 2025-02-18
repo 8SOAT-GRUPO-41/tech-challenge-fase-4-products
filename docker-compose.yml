@@ -1,22 +1,24 @@
+version: "3.8"
+
 services:
   db:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: lanchonete
-    ports:
-      - "5432:5432"
+    image: mongo:latest
     container_name: fiap-tech-challenge-fase-1-db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: products
+    ports:
+      - "27017:27017"
     volumes:
-      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data:/data/db
+    networks:
+      - fiap
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - fiap
 
   api:
     build:
@@ -26,11 +28,13 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=lanchonete
+      # Update these to match how your application reads its Mongo config.
+      # For example, if your code uses a connection string, you could do:
       - DB_HOST=db
-      - DB_PORT=5432
+      - DB_PORT=27017
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - DB_NAME=lanchonete
       - PORT=3000
     depends_on:
       db:
