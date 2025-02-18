@@ -3,7 +3,7 @@ version: "3.8"
 services:
   db:
     image: mongo:latest
-    container_name: fiap-tech-challenge-fase-1-db
+    container_name: fiap-tech-challenge-fase-4-products-db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -14,31 +14,19 @@ services:
       - ./data:/data/db
     networks:
       - fiap
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand({ ping: 1 })"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fiap-tech-challenge-fase-1-api
+    container_name: fiap-tech-challenge-fase-4-products
     ports:
       - "3000:3000"
     environment:
       # Update these to match how your application reads its Mongo config.
       # For example, if your code uses a connection string, you could do:
-      - DB_HOST=db
-      - DB_PORT=27017
-      - DB_USER=root
-      - DB_PASSWORD=example
-      - DB_NAME=lanchonete
       - PORT=3000
-    depends_on:
-      db:
-        condition: service_healthy
+      - MONGO_URL=mongodb://root:example@db:27017
     networks:
       - fiap
 
