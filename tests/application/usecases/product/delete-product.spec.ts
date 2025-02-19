@@ -36,4 +36,13 @@ describe(DeleteProduct.name, () => {
 
     await expect(promise).rejects.toThrow()
   })
+
+  it('should throw if product is not found', async () => {
+    const { sut, productRepositorySpy } = makeSut()
+    productRepositorySpy.findByIdResult = null
+
+    const promise = sut.execute('any_id')
+
+    await expect(promise).rejects.toThrow()
+  })
 })
