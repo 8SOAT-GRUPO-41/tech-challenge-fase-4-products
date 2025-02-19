@@ -25,8 +25,13 @@ export class FastifyHttpServer implements HttpServer {
 
   private async buildRoutes(): Promise<void> {
     const routes = [...productRoutes]
+    const apiPrefix = '/products'
     for (const route of routes) {
-      this.server[route.method](route.url, { schema: route.schema }, adaptFastifyRoute(route.handler()))
+      this.server[route.method](
+        `${apiPrefix}${route.url}`,
+        { schema: route.schema },
+        adaptFastifyRoute(route.handler())
+      )
     }
   }
 
@@ -36,7 +41,7 @@ export class FastifyHttpServer implements HttpServer {
         openapi: swaggerConfig
       })
       .register(fastifySwaggerUI, {
-        routePrefix: '/docs'
+        routePrefix: '/products/docs'
       })
   }
 
