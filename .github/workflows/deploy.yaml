@@ -49,15 +49,9 @@ jobs:
 
       - name: Helm Upgrade
         env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_HOST: ${{ secrets.DB_HOST }}
+          PRODUCTS_MONGO_URL: ${{ secrets.PRODUCTS_MONGO_URL }}
         run: |
           helm upgrade --install lanchonete-products-api ./k8s/lanchonete-products-api \
-            --set api.env.DB_USER=$DB_USER \
-            --set api.env.DB_PASSWORD=$DB_PASSWORD \
-            --set api.env.DB_NAME=$DB_NAME \
-            --set api.env.DB_HOST=$DB_HOST \
+            --set api.env.PRODUCTS_MONGO_URL=$PRODUCTS_MONGO_URL \
             --set api.image.repository=${{ env.DOCKER_IMAGE }} \
             --set api.image.tag=${{ env.image_tag }}
