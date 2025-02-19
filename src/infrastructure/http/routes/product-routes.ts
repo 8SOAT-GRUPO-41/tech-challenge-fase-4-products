@@ -2,7 +2,8 @@ import {
   makeCreateProductController,
   makeLoadProductsByCategoryController,
   makeDeleteProductController,
-  makeUpdateProductController
+  makeUpdateProductController,
+  makeFindProductController
 } from '@/infrastructure/factories/controllers'
 import { ErrorCodes } from '@/domain/enums'
 import { errorResponseSchema } from '@/infrastructure/swagger/error-response-schema'
@@ -12,7 +13,7 @@ import type { HttpRoute } from '@/infrastructure/http/interfaces'
 export const productRoutes = [
   {
     method: 'post',
-    url: '',
+    url: '/',
     handler: makeCreateProductController,
     schema: {
       tags: ['Products'],
@@ -101,6 +102,27 @@ export const productRoutes = [
           items: productSchema
         },
         400: errorResponseSchema(400, ErrorCodes.BAD_REQUEST),
+        500: errorResponseSchema(500, ErrorCodes.INTERNAL_SERVER_ERROR)
+      }
+    }
+  },
+  {
+    method: 'get',
+    url: '/:id',
+    handler: makeFindProductController,
+    schema: {
+      tags: ['Products'],
+      summary: 'Find a product by id',
+      params: {
+        type: 'object',
+        properties: {
+          id: productSchema.properties.productId
+        },
+        required: ['id']
+      },
+      response: {
+        200: productSchema,
+        404: errorResponseSchema(404, ErrorCodes.NOT_FOUND),
         500: errorResponseSchema(500, ErrorCodes.INTERNAL_SERVER_ERROR)
       }
     }

@@ -2,13 +2,15 @@ import {
   CreateProductController,
   DeleteProductController,
   LoadProductsByCategoryController,
-  UpdateProductController
+  UpdateProductController,
+  FindProductController
 } from '@/infrastructure/controllers/product-controller'
 import {
   makeCreateProduct,
   makeDeleteProduct,
   makeUpdateProduct,
-  makeLoadProductsByCategory
+  makeLoadProductsByCategory,
+  makeFindProduct
 } from '@/infrastructure/factories/usecases/product'
 import type { Controller } from '@/infrastructure/controllers/interfaces'
 
@@ -26,4 +28,8 @@ export const makeUpdateProductController = (): Controller => {
 
 export const makeLoadProductsByCategoryController = (): Controller => {
   return new LoadProductsByCategoryController(makeLoadProductsByCategory())
+}
+
+export const makeFindProductController = (): Controller => {
+  return new FindProductController(makeFindProduct())
 }

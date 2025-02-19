@@ -2,7 +2,8 @@ import type {
   CreateProduct,
   DeleteProduct,
   UpdateProduct,
-  LoadProductsByCategory
+  LoadProductsByCategory,
+  FindProduct
 } from '@/application/usecases/product'
 import type { ProductCategory } from '@/domain/enums'
 import type { HttpRequest, HttpResponse } from '@/infrastructure/http/interfaces'
@@ -70,6 +71,21 @@ export class LoadProductsByCategoryController implements Controller {
     return {
       statusCode: HttpStatusCode.OK,
       body: result.map((product) => product.toJSON())
+    }
+  }
+}
+
+export class FindProductController implements Controller {
+  constructor(private readonly findProductUseCase: FindProduct) {}
+
+  async handle(request: HttpRequest): Promise<HttpResponse> {
+    const { id } = request.params as { id: string }
+    const result = await this.findProductUseCase.execute({
+      productId: id
+    })
+    return {
+      statusCode: HttpStatusCode.OK,
+      body: result.toJSON()
     }
   }
 }

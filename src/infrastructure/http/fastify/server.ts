@@ -38,10 +38,10 @@ export class FastifyHttpServer implements HttpServer {
   private async buildDocs(): Promise<void> {
     await this.server
       .register(fastifySwagger, {
-        openapi: swaggerConfig
+        openapi: swaggerConfig,
       })
       .register(fastifySwaggerUI, {
-        routePrefix: '/products/docs'
+        routePrefix: '/products-docs',
       })
   }
 
