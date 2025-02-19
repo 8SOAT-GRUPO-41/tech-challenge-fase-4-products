@@ -52,6 +52,6 @@ jobs:
           PRODUCTS_MONGO_URL: ${{ secrets.PRODUCTS_MONGO_URL }}
         run: |
           helm upgrade --install lanchonete-products-api ./k8s/lanchonete-products-api \
-            --set api.env.MONGO_URL${{ env.PRODUCTS_MONGO_URL }} \
+            --set api.env.MONGO_URL=${{ env.PRODUCTS_MONGO_URL }} \
             --set api.image.repository=${{ env.DOCKER_IMAGE }} \
             --set api.image.tag=${{ env.image_tag }}
