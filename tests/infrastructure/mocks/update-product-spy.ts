@@ -17,6 +17,7 @@ export class UpdateProductSpy implements IUpdateProduct {
   callsCount = 0
   lastInput?: Input
   shouldThrowNotFound = false
+  result = productMock
 
   async execute(input: Input): Promise<Product> {
     this.callsCount++
@@ -26,6 +27,6 @@ export class UpdateProductSpy implements IUpdateProduct {
       throw new NotFoundError('Product not found')
     }
 
-    return productMock
+    return this.result
   }
 }

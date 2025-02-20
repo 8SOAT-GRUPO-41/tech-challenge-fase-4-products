@@ -10,7 +10,7 @@ import type { HttpRequest, HttpResponse } from '@/infrastructure/http/interfaces
 import { HttpStatusCode } from '@/infrastructure/http/helper'
 import type { Controller } from '@/infrastructure/controllers/interfaces'
 
-interface CreateProductInput {
+export interface CreateProductInput {
   name: string
   price: number
   description: string
