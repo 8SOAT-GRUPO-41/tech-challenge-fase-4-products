@@ -8,6 +8,7 @@ module.exports = {
     '!<rootDir>/src/**/index.ts',
     '!<rootDir>/src/**/protocols/**',
     '!<rootDir>/src/**/infrastructure/factories/**',
+    '!<rootDir>/src/**/infrastructure/swagger/**',
   ],
   preset: 'ts-jest',
   testEnvironment: 'node',
