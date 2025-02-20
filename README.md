@@ -29,4 +29,6 @@ docker-compose up
 
 ## Arquitetura
 
-![Arquitetura](diagrams/aws-architecture.png)
+Abaixo, está o diagrama da arquitetura do sistema, com destaque para o microserviço de produtos.
+
+![Arquitetura](diagrams/architecture-fase-4-products.png)
