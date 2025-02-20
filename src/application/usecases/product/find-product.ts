@@ -6,7 +6,11 @@ type Input = {
   productId: string
 }
 
-export class FindProduct {
+export interface IFindProduct {
+  execute: (input: Input) => Promise<Product>
+}
+
+export class FindProduct implements IFindProduct {
   constructor(private readonly productRepository: ProductRepository) {}
 
   async execute(input: Input): Promise<Product> {

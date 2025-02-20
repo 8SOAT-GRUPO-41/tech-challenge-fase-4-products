@@ -9,7 +9,11 @@ type Input = {
   description: string
 }
 
-export class CreateProduct {
+export interface ICreateProduct {
+  execute: (params: Input) => Promise<Product>
+}
+
+export class CreateProduct implements ICreateProduct {
   constructor(private readonly productRepository: ProductRepository) {}
 
   async execute(params: Input): Promise<Product> {

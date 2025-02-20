@@ -1,0 +1,5 @@
+export * from './create-product-spy'
+export * from './delete-product-spy'
+export * from './find-product-spy'
+export * from './load-products-by-category-spy'
+export * from './update-product-spy'

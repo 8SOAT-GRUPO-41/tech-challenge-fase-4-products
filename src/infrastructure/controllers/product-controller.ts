@@ -1,9 +1,9 @@
 import type {
-  CreateProduct,
-  DeleteProduct,
-  UpdateProduct,
-  LoadProductsByCategory,
-  FindProduct
+  IFindProduct,
+  ILoadProductsByCategory,
+  IUpdateProduct,
+  IDeleteProduct,
+  ICreateProduct
 } from '@/application/usecases/product'
 import type { ProductCategory } from '@/domain/enums'
 import type { HttpRequest, HttpResponse } from '@/infrastructure/http/interfaces'
@@ -22,7 +22,7 @@ interface UpdateProductInput extends Partial<CreateProductInput> {
 }
 
 export class CreateProductController implements Controller {
-  constructor(private readonly createProductUseCase: CreateProduct) {}
+  constructor(private readonly createProductUseCase: ICreateProduct) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     const input = request.body as CreateProductInput
@@ -35,7 +35,7 @@ export class CreateProductController implements Controller {
 }
 
 export class DeleteProductController implements Controller {
-  constructor(private readonly deleteProductUseCase: DeleteProduct) {}
+  constructor(private readonly deleteProductUseCase: IDeleteProduct) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     const { id } = request.params as { id: string }
@@ -48,7 +48,7 @@ export class DeleteProductController implements Controller {
 }
 
 export class UpdateProductController implements Controller {
-  constructor(private readonly updateProductUseCase: UpdateProduct) {}
+  constructor(private readonly updateProductUseCase: IUpdateProduct) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     const { id } = request.params as { id: string }
@@ -63,7 +63,7 @@ export class UpdateProductController implements Controller {
 }
 
 export class LoadProductsByCategoryController implements Controller {
-  constructor(private readonly loadProductsByCategoryUseCase: LoadProductsByCategory) {}
+  constructor(private readonly loadProductsByCategoryUseCase: ILoadProductsByCategory) {}
 
   async handle(request: HttpRequest<null, null, { category: ProductCategory }>): Promise<HttpResponse> {
     const { category } = request.params
@@ -76,7 +76,7 @@ export class LoadProductsByCategoryController implements Controller {
 }
 
 export class FindProductController implements Controller {
-  constructor(private readonly findProductUseCase: FindProduct) {}
+  constructor(private readonly findProductUseCase: IFindProduct) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     const { id } = request.params as { id: string }

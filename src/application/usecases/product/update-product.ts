@@ -10,7 +10,11 @@ type Input = { productId: string } & Partial<{
   description: string
 }>
 
-export class UpdateProduct {
+export interface IUpdateProduct {
+  execute: (input: Input) => Promise<Product>
+}
+
+export class UpdateProduct implements IUpdateProduct {
   constructor(private readonly productRepository: ProductRepository) {}
 
   async execute(input: Input): Promise<Product> {
