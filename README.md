@@ -7,7 +7,7 @@
 
 ## Descrição do Projeto
 
-Este projeto, desenvolvido pelo Grupo 41, visa a criação de um sistema de gestão operacional para uma lanchonete. O sistema será responsável por gerenciar pedidos, produtos e clientes, proporcionando uma solução eficiente e organizada para as operações diárias da lanchonete.
+A Products API é um microserviço do sistema de gestão operacional para uma lanchonete, desenvolvido pelo Grupo 41 no 8SOAT FIAP Tech Challenge. Este microserviço é responsável pelo gerenciamento de produtos, incluindo criação, atualização, listagem e remoção de produtos do cardápio.
 
 ## Como Iniciar o Projeto Localmente
 
