@@ -3,8 +3,6 @@ import { UpdateProductSpy } from '@/tests/infrastructure/mocks/update-product-sp
 import type { HttpRequest } from '@/infrastructure/http/interfaces'
 import { HttpStatusCode } from '@/infrastructure/http/helper'
 import type { CreateProductInput } from '@/infrastructure/controllers/product-controller'
-import { Product } from '@/domain/entities'
-import { ProductCategory } from '@/domain/enums'
 
 interface SutTypes {
   sut: UpdateProductController
