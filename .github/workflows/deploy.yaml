@@ -23,7 +23,7 @@ jobs:
         run: yarn
 
       - name: Test and Coverage
-        run: yarn jest --coverage
+        run: yarn test:cov
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
