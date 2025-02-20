@@ -1,5 +1,10 @@
 # 8SOAT FIAP Tech Challenge | Grupo 41 | Products API
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=8SOAT-GRUPO-41_tech-challenge-fase-4-products&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=8SOAT-GRUPO-41_tech-challenge-fase-4-products)
+
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=8SOAT-GRUPO-41_tech-challenge-fase-4-products&metric=coverage)](https://sonarcloud.io/summary/new_code?id=8SOAT-GRUPO-41_tech-challenge-fase-4-products)
+
+
 ## Descrição do Projeto
 
 Este projeto, desenvolvido pelo Grupo 41, visa a criação de um sistema de gestão operacional para uma lanchonete. O sistema será responsável por gerenciar pedidos, produtos e clientes, proporcionando uma solução eficiente e organizada para as operações diárias da lanchonete.
