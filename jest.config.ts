@@ -7,6 +7,7 @@ module.exports = {
     '!<rootDir>/src/main/**',
     '!<rootDir>/src/**/index.ts',
     '!<rootDir>/src/**/protocols/**',
+    '!<rootDir>/src/**/infrastructure/factories/**',
   ],
   preset: 'ts-jest',
   testEnvironment: 'node',
