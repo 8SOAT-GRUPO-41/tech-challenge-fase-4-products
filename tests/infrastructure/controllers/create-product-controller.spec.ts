@@ -1,63 +1,131 @@
-import { CreateProductController } from '@/infrastructure/controllers/product-controller'
-import { CreateProductSpy } from '@/tests/infrastructure/mocks/create-product-spy'
-import type { HttpRequest } from '@/infrastructure/http/interfaces'
-import { HttpStatusCode } from '@/infrastructure/http/helper'
-import type { CreateProductInput } from '@/infrastructure/controllers/product-controller'
-import { ProductCategory } from '@/domain/enums'
+import { CreateProductController } from "@/infrastructure/controllers/product-controller";
+import { CreateProductSpy } from "@/tests/infrastructure/mocks/create-product-spy";
+import type { HttpRequest } from "@/infrastructure/http/interfaces";
+import { HttpStatusCode } from "@/infrastructure/http/helper";
+import type { CreateProductInput } from "@/infrastructure/controllers/product-controller";
+import { ProductCategory } from "@/domain/enums";
 
-interface SutTypes {
-  sut: CreateProductController
-  createProductSpy: CreateProductSpy
-}
+describe("CreateProductController", () => {
+  // Cenário: Criação bem-sucedida de um produto
+  describe("Given a valid product creation request", () => {
+    let sut: CreateProductController;
+    let createProductSpy: CreateProductSpy;
+    let request: HttpRequest<CreateProductInput>;
 
-const makeSut = (): SutTypes => {
-  const createProductSpy = new CreateProductSpy()
-  const sut = new CreateProductController(createProductSpy)
-  return {
-    sut,
-    createProductSpy
-  }
-}
+    beforeEach(() => {
+      // Given
+      createProductSpy = new CreateProductSpy();
+      sut = new CreateProductController(createProductSpy);
+      request = {
+        body: {
+          name: "Hamburguer Artesanal",
+          price: 29.9,
+          description: "Delicioso hamburguer artesanal",
+          category: ProductCategory.FOOD,
+        },
+        params: null,
+        query: null,
+      };
+    });
 
-describe(CreateProductController.name, () => {
-  const request: HttpRequest<CreateProductInput> = {
-    body: {
-      name: 'any_name',
-      price: 100,
-      description: 'any_description',
-      category: ProductCategory.DESSERT
-    },
-    params: null,
-    query: null
-  }
+    describe("When the request is handled", () => {
+      it("Then it should call createProductUseCase with correct values", async () => {
+        // When
+        await sut.handle(request);
 
-  it('should call createProductUseCase with correct values', async () => {
-    const { sut, createProductSpy } = makeSut()
+        // Then
+        expect(createProductSpy.input?.name).toBe("Hamburguer Artesanal");
+        expect(createProductSpy.input?.price).toBe(29.9);
+        expect(createProductSpy.input?.description).toBe(
+          "Delicioso hamburguer artesanal"
+        );
+        expect(createProductSpy.input?.category).toBe(ProductCategory.FOOD);
+        expect(createProductSpy.callsCount).toBe(1);
+      });
 
-    await sut.handle(request)
+      it("Then it should return 201 status code", async () => {
+        // When
+        const response = await sut.handle(request);
 
-    expect(createProductSpy.input?.name).toBe('any_name')
-    expect(createProductSpy.input?.price).toBe(100)
-    expect(createProductSpy.input?.description).toBe('any_description')
-    expect(createProductSpy.input?.category).toBe('Sobremesa')
-    expect(createProductSpy.callsCount).toBe(1)
-  })
+        // Then
+        expect(response.statusCode).toBe(HttpStatusCode.CREATED);
+      });
 
-  it('should return 201 on success', async () => {
-    const { sut } = makeSut()
+      it("Then it should return the created product in the response body", async () => {
+        // When
+        const response = await sut.handle(request);
 
-    const response = await sut.handle(request)
+        // Then
+        expect(response.body).toEqual({
+          productId: expect.any(String),
+          name: request.body.name,
+          price: request.body.price,
+          description: request.body.description,
+          category: request.body.category,
+        });
+      });
+    });
+  });
 
-    expect(response.statusCode).toBe(HttpStatusCode.CREATED)
-  })
+  // Cenário: Tentativa de criar produto com dados inválidos
+  describe("Given an invalid product creation request", () => {
+    let sut: CreateProductController;
+    let createProductSpy: CreateProductSpy;
+    let request: HttpRequest<Partial<CreateProductInput>>;
 
-  it('should return the created product in body on success', async () => {
-    const { sut, createProductSpy } = makeSut()
-    const response = await sut.handle(request)
+    beforeEach(() => {
+      // Given
+      createProductSpy = new CreateProductSpy();
+      sut = new CreateProductController(createProductSpy);
+      request = {
+        body: {
+          name: "", // nome inválido
+          price: -10, // preço inválido
+          category: "INVALID_CATEGORY" as ProductCategory, // categoria inválida
+        },
+        params: null,
+        query: null,
+      };
+    });
 
-    expect((response.body as any).name).toBe(createProductSpy.input?.name)
-    expect((response.body as any).price).toBe(createProductSpy.input?.price)
-    expect((response.body as any).description).toBe(createProductSpy.input?.description)
-    expect((response.body as any).category).toBe(createProductSpy.input?.category)
-  })
-})
+    describe("When the request is handled", () => {
+      it("Then it should throw validation error", async () => {
+        // When/Then
+        await expect(sut.handle(request)).rejects.toThrow();
+      });
+    });
+  });
+
+  // Cenário: Erro interno durante a criação do produto
+  describe("Given a system error during product creation", () => {
+    let sut: CreateProductController;
+    let createProductSpy: CreateProductSpy;
+    let request: HttpRequest<CreateProductInput>;
+
+    beforeEach(() => {
+      // Given
+      createProductSpy = new CreateProductSpy();
+      jest
+        .spyOn(createProductSpy, "execute")
+        .mockRejectedValueOnce(new Error("Database error"));
+      sut = new CreateProductController(createProductSpy);
+      request = {
+        body: {
+          name: "Hamburguer Artesanal",
+          price: 29.9,
+          description: "Delicioso hamburguer artesanal",
+          category: ProductCategory.FOOD,
+        },
+        params: null,
+        query: null,
+      };
+    });
+
+    describe("When the request is handled", () => {
+      it("Then it should propagate the error", async () => {
+        // When/Then
+        await expect(sut.handle(request)).rejects.toThrow("Database error");
+      });
+    });
+  });
+});
